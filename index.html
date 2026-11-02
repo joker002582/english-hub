@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英途 EnglishHub · 我的英语成长站</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ==================== 顶部导航 ==================== -->
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">🚀 英途 <b>EnglishHub</b></div>
+    <nav class="nav" id="navBtns">
+      <button class="nav-btn active" data-tab="home">🏠 首页</button>
+      <button class="nav-btn" data-tab="vocab">📚 词汇</button>
+      <button class="nav-btn" data-tab="speaking">🗣️ 口语</button>
+      <button class="nav-btn" data-tab="ai">🤖 AI陪练</button>
+      <button class="nav-btn" data-tab="grammar">📖 语法</button>
+      <button class="nav-btn" data-tab="exam">🎯 考试</button>
+      <button class="nav-btn" data-tab="plan">📅 计划</button>
+    </nav>
+    <div class="row" style="gap:8px">
+      <div class="streak" id="streakBadge" title="连续打卡天数">🔥 0 天</div>
+      <button class="iconbtn" id="themeBtn" title="切换深色/浅色">🌙</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ==================== 首页 ==================== -->
+<section class="tab active" id="tab-home">
+  <div class="hero">
+    <div class="hero-left">
+      <h1 id="homeGreet">你好呀 👋</h1>
+      <div class="sub">从 AB 级到四六级再到 BEC，每天进步一点点，就能和外国人自信地聊天。</div>
+      <div class="row mt12" style="gap:10px;flex-wrap:wrap">
+        <button class="btn ghost" data-goto="plan">📅 制定我的学习计划</button>
+        <button class="btn ghost" data-goto="vocab">📚 今天先背 20 个单词</button>
+      </div>
+    </div>
+    <div class="quote-box">
+      <div class="quote-en" id="quoteEn"></div>
+      <div class="quote-zh" id="quoteZh"></div>
+      <button class="btn sm ghost qs-btn" id="quoteSpeak">🔊 朗读</button>
+    </div>
+  </div>
+
+  <div class="grid-stats mt16" id="homeStats"></div>
+
+  <div class="grid2 mt16">
+    <div class="card">
+      <h2>🗺️ 我的学习路线</h2>
+      <div class="roadmap" id="roadmap"></div>
+    </div>
+    <div class="card">
+      <h2>✅ 今日任务</h2>
+      <div id="todayTasks"></div>
+      <button class="btn sm primary mt8" data-goto="plan">去打卡 →</button>
+    </div>
+  </div>
+
+  <div class="quick-grid mt16" id="homeQuick"></div>
+</section>
+
+<!-- ==================== 词汇 ==================== -->
+<section class="tab" id="tab-vocab">
+  <div class="chips" id="vocabCatChips"></div>
+  <div class="toolbar">
+    <button class="btn sm primary" id="vocabModeLearn">🧠 学习模式</button>
+    <button class="btn sm" id="vocabModeQuiz">📝 测验模式</button>
+    <button class="btn sm" id="notebookBtn">📕 生词本(<span id="notebookCount">0</span>)</button>
+    <input type="search" class="grow" id="vocabSearch" placeholder="🔍 在当前词库中搜索单词或释义...">
+  </div>
+  <div class="row between small muted mb12">
+    <span id="vocabCatDesc"></span>
+    <span id="vocabProgressText"></span>
+  </div>
+  <div class="bar mb12"><i id="vocabProgressBar" style="width:0%"></i></div>
+
+  <!-- 学习模式 -->
+  <div id="vocabLearn">
+    <div class="card wordcard" id="vocabCard"></div>
+    <div class="vocab-actions mt12">
+      <button class="btn" id="vocabPrev">⬅ 上一个</button>
+      <button class="btn" id="vocabSpeak">🔊 发音</button>
+      <button class="btn" id="vocabShuffle">🔀 随机</button>
+      <button class="btn ok" id="vocabKnown">✅ 认识</button>
+      <button class="btn warn" id="vocabWrong">📕 生词</button>
+      <button class="btn" id="vocabAi">🤖 AI 造句</button>
+      <button class="btn" id="vocabNext">下一个 ➡</button>
+    </div>
+  </div>
+
+  <!-- 测验模式 -->
+  <div id="vocabQuiz" class="hidden">
+    <div class="card quiz-box" id="vocabQuizBox"></div>
+  </div>
+
+  <!-- 生词本 -->
+  <div class="card mt16 hidden" id="notebookPanel">
+    <div class="row between" style="flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0">📕 生词本</h2>
+      <div class="row" style="gap:8px">
+        <button class="btn sm" id="notebookExport">📤 导出</button>
+        <button class="btn sm danger" id="notebookClear">🗑️ 清空</button>
+      </div>
+    </div>
+    <div id="notebookList" class="mt12"></div>
+  </div>
+</section>
+
+<!-- ==================== 口语 ==================== -->
+<section class="tab" id="tab-speaking">
+  <div class="chips" id="scnChips"></div>
+  <div class="card">
+    <h2 id="scnTitle"></h2>
+    <div class="small muted mb12" id="scnDesc"></div>
+    <div class="row between" style="flex-wrap:wrap;gap:8px">
+      <label class="small" style="display:flex;align-items:center;gap:6px">
+        <input type="checkbox" id="showZh" checked style="width:16px;height:16px"> 显示中文翻译
+      </label>
+      <div class="row" style="gap:8px;align-items:center">
+        <span class="small muted">语速</span>
+        <select id="rateSel" style="width:auto">
+          <option value="0.7">🐢 慢速</option>
+          <option value="1" selected>🚶 正常</option>
+          <option value="1.15">🐇 快速</option>
+        </select>
+        <button class="btn sm" id="dictBtn">🎧 听写练习</button>
+      </div>
+    </div>
+    <div id="scnLines" class="mt12"></div>
+  </div>
+
+  <!-- 听写练习 -->
+  <div class="card mt16 hidden" id="dictPanel">
+    <h2>🎧 听写练习（练听力）</h2>
+    <div class="small muted mb12">听发音，把句子打出来（大小写和标点不影响评分）。每轮 5 句。</div>
+    <div class="dict-box">
+      <div class="dict-word" id="dictWord"></div>
+      <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn sm primary" id="dictSpeak">🔊 播放</button>
+        <button class="btn sm ghost" id="dictSlow">🐢 慢速播放</button>
+      </div>
+      <input type="text" id="dictInput" class="mt12" placeholder="把你听到的句子打在这里..." autocomplete="off">
+      <div class="row mt12" style="gap:8px;flex-wrap:wrap">
+        <button class="btn primary" id="dictCheck">✅ 提交</button>
+        <button class="btn" id="dictSkip">⏭ 跳过</button>
+        <button class="btn ghost" id="dictEnd">🏁 结束本轮</button>
+      </div>
+      <div class="small muted mt8" id="dictScore"></div>
+    </div>
+  </div>
+
+  <!-- 地道表达 + 音标 -->
+  <div class="card mt16">
+    <div class="row between" style="flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0">🗣️ 接地气表达（地道口语）</h2>
+      <button class="btn sm ghost" id="phonemeToggle">🔤 48 音标表</button>
+    </div>
+    <div class="card hidden" id="phonemeBox" style="margin-top:12px"></div>
+    <div id="exprList" class="mt12"></div>
+  </div>
+</section>
+
+<!-- ==================== AI 陪练 ==================== -->
+<section class="tab" id="tab-ai">
+  <div class="card">
+    <h2>🤖 AI 口语陪练 · 配置</h2>
+    <p class="small muted">接入 DeepSeek API 后即可拥有 24 小时英语口语老师。价格便宜，密钥只保存在你自己的浏览器里。</p>
+    <div class="form-grid">
+      <div class="field"><label>API Key</label><input type="password" id="aiKey" placeholder="sk-..." autocomplete="off"></div>
+      <div class="field"><label>接口地址</label><input type="text" id="aiBase" value="https://api.deepseek.com" autocomplete="off"></div>
+      <div class="field"><label>模型</label><input type="text" id="aiModel" value="deepseek-chat" autocomplete="off"></div>
+    </div>
+    <div class="row mt12" style="gap:8px;flex-wrap:wrap">
+      <button class="btn primary" id="aiSave">💾 保存配置</button>
+      <button class="btn" id="aiTest">🔌 测试连接</button>
+      <span class="small" id="aiStatus"></span>
+    </div>
+    <details class="mt12">
+      <summary class="small" style="cursor:pointer">❓ 没有 Key？点我看 1 分钟获取教程</summary>
+      <ol class="small" style="line-height:1.9;margin-top:8px;padding-left:20px">
+        <li>打开 <a href="https://platform.deepseek.com" target="_blank" rel="noopener">platform.deepseek.com</a> 注册账号（手机号即可）；</li>
+        <li>进入「充值」页，充 10 元（价格便宜，够练很久）；</li>
+        <li>进入「API keys」页面，点「创建 API key」，复制 sk- 开头的密钥；</li>
+        <li>粘贴到上方输入框，点「保存配置」→「测试连接」，成功即可开聊。</li>
+      </ol>
+    </details>
+  </div>
+
+  <div class="chips mt16" id="aiModeChips">
+    <button class="chip active" data-mode="free">💬 自由对话</button>
+    <button class="chip" data-mode="restaurant">🍜 餐厅点餐</button>
+    <button class="chip" data-mode="interview">📋 面试陪练</button>
+    <button class="chip" data-mode="meeting">💼 商务会议</button>
+    <button class="chip" data-mode="campus">🏫 校园闲聊</button>
+    <button class="chip" data-mode="writing">✍️ 写作批改</button>
+    <button class="chip" data-mode="translate">🈶 中英互译</button>
+    <button class="chip" data-mode="sentence">💡 单词造句</button>
+  </div>
+  <div class="small muted mt8" id="aiModeNote"></div>
+
+  <div class="card mt12 hidden" id="aiExtraArea">
+    <div class="field">
+      <label id="aiExtraLabel"></label>
+      <textarea id="aiExtraInput" rows="5"></textarea>
+      <button class="btn primary mt8" id="aiExtraGo">🚀 开始</button>
+    </div>
+  </div>
+
+  <div class="chat mt12" id="chatLog"></div>
+  <div class="chat-input">
+    <textarea id="aiInput" rows="1" placeholder="跟 AI 老师用英语聊天吧…（Enter 发送，Shift+Enter 换行）"></textarea>
+    <button class="btn primary" id="aiSend">发送</button>
+    <button class="btn" id="aiMic" title="语音输入">🎤</button>
+    <button class="btn ghost" id="aiClear" title="清空对话">🗑️</button>
+  </div>
+  <div class="row between small muted mt8" style="flex-wrap:wrap;gap:6px">
+    <span id="aiCount"></span>
+    <span>💡 点 AI 回复下方的 🔊 可以听发音</span>
+  </div>
+</section>
+
+<!-- ==================== 语法 ==================== -->
+<section class="tab" id="tab-grammar">
+  <div class="card">
+    <h2>📖 基础语法速成（零基础友好）</h2>
+    <div class="small muted mb12">按顺序学，每天 1 个主题，10 天过完基础语法。做完每个主题的小测验再继续。</div>
+    <div id="grammarList"></div>
+  </div>
+</section>
+
+<!-- ==================== 考试 ==================== -->
+<section class="tab" id="tab-exam">
+  <div class="chips" id="examInfoTabs">
+    <button class="chip active" data-exam="ab">AB 级</button>
+    <button class="chip" data-exam="cet">四六级</button>
+    <button class="chip" data-exam="bec">BEC 商务英语</button>
+  </div>
+  <div id="examInfo"></div>
+
+  <div class="card mt16">
+    <div class="row between" style="flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0">📝 真题风格样题（共 <span id="examTotal">24</span> 题）</h2>
+      <button class="btn sm primary" id="examRestart">🔄 重新开始</button>
+    </div>
+    <div id="examQuizBox" class="mt12"></div>
+  </div>
+
+  <div class="card mt16">
+    <h2>🌐 免费学习资源推荐</h2>
+    <div id="resourcesList"></div>
+  </div>
+</section>
+
+<!-- ==================== 计划 ==================== -->
+<section class="tab" id="tab-plan">
+  <div class="grid2">
+    <div class="card">
+      <h2>🎯 目标与信息</h2>
+      <div class="form-grid">
+        <div class="field"><label>昵称</label><input id="pfName" placeholder="同学"></div>
+        <div class="field"><label>学校</label><input id="pfSchool" placeholder="陕西职业技术学院"></div>
+        <div class="field"><label>专业</label><input id="pfMajor" placeholder="计算机网络技术"></div>
+        <div class="field"><label>年级</label><input id="pfGrade" placeholder="大一"></div>
+        <div class="field"><label>每日学习时长（分钟）</label><input type="number" id="pfDailyMin" value="60" min="10" max="600"></div>
+        <div class="field"><label>AB 级考试日期</label><input type="date" id="pfAb"></div>
+        <div class="field"><label>四级考试日期</label><input type="date" id="pfCet4"></div>
+        <div class="field"><label>六级考试日期</label><input type="date" id="pfCet6"></div>
+        <div class="field"><label>BEC 考试日期</label><input type="date" id="pfBec"></div>
+      </div>
+      <button class="btn primary mt12" id="pfSave">💾 保存并生成计划</button>
+    </div>
+    <div class="card">
+      <h2>⏱️ 专注计时（番茄钟）</h2>
+      <div class="pomo-box">
+        <div class="pomo-time" id="pomoTime">25:00</div>
+        <div class="small muted" id="pomoMode">📖 学习时间</div>
+        <div class="row center mt12" style="gap:8px">
+          <button class="btn primary" id="pomoStart">▶ 开始</button>
+          <button class="btn" id="pomoReset">↺ 重置</button>
+        </div>
+      </div>
+      <div class="small muted mt12">学习 25 分钟，休息 5 分钟。专注学习期间别刷手机哦 😉</div>
+    </div>
+  </div>
+
+  <div class="card mt16">
+    <h2>🛤️ 里程碑倒计时</h2>
+    <div id="milestones"></div>
+  </div>
+
+  <div class="card mt16">
+    <div class="row between" style="flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0">✅ 每日任务（全部完成自动打卡）</h2>
+      <button class="btn sm primary" id="checkinBtn">🔥 手动打卡</button>
+    </div>
+    <div id="dailyTasks" class="mt12"></div>
+  </div>
+
+  <div class="grid2 mt16">
+    <div class="card">
+      <h2>📆 打卡日历（近 35 天）</h2>
+      <div class="cal" id="calGrid"></div>
+      <div class="small muted mt8" id="calLegend"></div>
+    </div>
+    <div class="card">
+      <h2>📊 数据与备份</h2>
+      <div id="planStats" class="mt8"></div>
+      <div class="row mt12" style="gap:8px;flex-wrap:wrap">
+        <button class="btn" id="exportData">📤 导出全部数据</button>
+        <button class="btn danger" id="resetData">🗑️ 清空所有数据</button>
+      </div>
+      <div class="small muted mt12">数据保存在浏览器本地（localStorage），换电脑或清浏览器缓存前记得先点「导出全部数据」备份。</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>英途 EnglishHub · 为计算机网络技术专业的你定制 · <span id="footerTip"></span></footer>
+<div id="toast"></div>
+<div id="jsError" class="hidden"></div>
+
+<!-- JS 按依赖顺序加载：数据 → 工具 → 各模块 → 入口 -->
+<script src="js/data-vocab.js"></script>
+<script src="js/data-content.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/progress.js"></script>
+<script src="js/plan.js"></script>
+<script src="js/vocab.js"></script>
+<script src="js/speaking.js"></script>
+<script src="js/exam.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/app.js"></script>
+<script>
+  // 全局错误提示：如果页面出错，顶部会显示红条，方便反馈问题
+  window.addEventListener("error", function (e) {
+    var el = document.getElementById("jsError");
+    if (!el) return;
+    var file = (e.filename || "").split("/").pop() || "未知文件";
+    el.textContent = "⚠️ 页面脚本出错：" + e.message + "（" + file + " 第 " + e.lineno + " 行）。按 F12 打开控制台可看详情。";
+    el.classList.remove("hidden");
+  });
+</script>
+</body>
+</html>
